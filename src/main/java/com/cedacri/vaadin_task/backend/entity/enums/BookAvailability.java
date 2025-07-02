@@ -1,4 +1,4 @@
-package com.cedacri.vaadin_task.entity.enums;
+package com.cedacri.vaadin_task.backend.entity.enums;
 
 public enum BookAvailability {
     AVAILABLE,
