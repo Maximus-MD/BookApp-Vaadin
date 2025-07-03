@@ -12,5 +12,5 @@ public interface BookService {
 
     void saveBook(BookDto bookDto);
 
-    void deleteBook(Long bookId);
+    void deleteBookByName(String name);
 }

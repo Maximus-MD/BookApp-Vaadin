@@ -1,13 +1,15 @@
 package com.cedacri.vaadin_task.backend.mapper;
 
+import com.cedacri.vaadin_task.backend.dto.AuthorDto;
 import com.cedacri.vaadin_task.backend.dto.BookDto;
+import com.cedacri.vaadin_task.backend.entity.Author;
 import com.cedacri.vaadin_task.backend.entity.Book;
 
 import static com.cedacri.vaadin_task.backend.mapper.AuthorMapper.mapToAuthor;
-import static com.cedacri.vaadin_task.backend.mapper.AuthorMapper.mapToAuthorDTO;
 
 public class BookMapper {
     public static BookDto mapToBookDTO(Book book) {
+
         return BookDto.builder()
                 .name(book.getName())
                 .description(book.getDescription())
@@ -16,7 +18,11 @@ public class BookMapper {
                 .price(book.getPrice())
                 .category(book.getCategory())
                 .availability(book.getAvailability())
-                .author(mapToAuthorDTO(book.getAuthor()))
+                .author(AuthorDto.builder()
+                        .id(book.getAuthor().getId())
+                        .firstname(book.getAuthor().getFirstname())
+                        .lastname(book.getAuthor().getLastname())
+                        .build())
                 .build();
     }
 

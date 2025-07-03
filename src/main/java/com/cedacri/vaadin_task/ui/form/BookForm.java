@@ -12,6 +12,8 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
+import java.util.List;
+
 public class BookForm extends FormLayout {
 
     private final TextField name = new TextField("Name");
@@ -35,21 +37,21 @@ public class BookForm extends FormLayout {
         availability.setItems(BookAvailability.values());
 
         save.addClickListener(e -> {
-            BookDto dto = new BookDto();
-            dto.setName(name.getValue());
-            dto.setDescription(description.getValue());
-            dto.setPages(pages.getValue());
-            dto.setPublished(published.getValue());
-            dto.setPrice(price.getValue());
-            dto.setCategory(category.getValue());
-            dto.setAvailability(availability.getValue());
+            BookDto bookDto = new BookDto();
+            bookDto.setName(name.getValue());
+            bookDto.setDescription(description.getValue());
+            bookDto.setPages(pages.getValue());
+            bookDto.setPublished(published.getValue());
+            bookDto.setPrice(price.getValue());
+            bookDto.setCategory(category.getValue());
+            bookDto.setAvailability(availability.getValue());
 
             AuthorDto authorDto = new AuthorDto();
             authorDto.setFirstname(authorFirstName.getValue());
             authorDto.setLastname(authorLastName.getValue());
-            dto.setAuthor(authorDto);
+            bookDto.setAuthor(authorDto);
 
-            listener.onSave(dto);
+            listener.onSave(bookDto);
         });
 
         add(name, description, pages, published, price, category, availability,
@@ -67,5 +69,20 @@ public class BookForm extends FormLayout {
         authorFirstName.clear();
         authorLastName.clear();
     }
-}
 
+    public void setBookDto(BookDto bookDto) {
+        if (bookDto == null) {
+            clear();
+        } else {
+            name.setValue(bookDto.getName());
+            description.setValue(bookDto.getDescription());
+            pages.setValue(bookDto.getPages());
+            published.setValue(bookDto.getPublished());
+            price.setValue(bookDto.getPrice());
+            category.setValue(bookDto.getCategory());
+            availability.setValue(bookDto.getAvailability());
+            authorFirstName.setValue(bookDto.getAuthor().getFirstname());
+            authorLastName.setValue(bookDto.getAuthor().getLastname());
+        }
+    }
+}

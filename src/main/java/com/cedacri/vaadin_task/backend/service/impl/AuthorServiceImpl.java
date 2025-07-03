@@ -58,7 +58,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public void deleteAuthor(Long authorId) {
+    public void deleteAuthorById(Long authorId) {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new BookNotFoundException(String.format("Author id:%d not found.", authorId)));
 
