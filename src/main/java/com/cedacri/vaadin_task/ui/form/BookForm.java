@@ -12,9 +12,9 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
-import java.util.List;
-
 public class BookForm extends FormLayout {
+
+    private BookDto bookDto = new BookDto();
 
     private final TextField name = new TextField("Name");
     private final TextField description = new TextField("Description");
@@ -37,21 +37,29 @@ public class BookForm extends FormLayout {
         availability.setItems(BookAvailability.values());
 
         save.addClickListener(e -> {
-            BookDto bookDto = new BookDto();
-            bookDto.setName(name.getValue());
-            bookDto.setDescription(description.getValue());
-            bookDto.setPages(pages.getValue());
-            bookDto.setPublished(published.getValue());
-            bookDto.setPrice(price.getValue());
-            bookDto.setCategory(category.getValue());
-            bookDto.setAvailability(availability.getValue());
+            if (this.bookDto == null) {
+                this.bookDto = new BookDto();
+            }
 
-            AuthorDto authorDto = new AuthorDto();
+            this.bookDto.setName(name.getValue());
+            this.bookDto.setDescription(description.getValue());
+            this.bookDto.setPages(pages.getValue());
+            this.bookDto.setPublished(published.getValue());
+            this.bookDto.setPrice(price.getValue());
+            this.bookDto.setCategory(category.getValue());
+            this.bookDto.setAvailability(availability.getValue());
+
+            AuthorDto authorDto = this.bookDto.getAuthor();
+            if (authorDto == null) {
+                authorDto = new AuthorDto();
+            }
+
             authorDto.setFirstname(authorFirstName.getValue());
             authorDto.setLastname(authorLastName.getValue());
-            bookDto.setAuthor(authorDto);
 
-            listener.onSave(bookDto);
+            this.bookDto.setAuthor(authorDto);
+
+            listener.onSave(this.bookDto);
         });
 
         add(name, description, pages, published, price, category, availability,
@@ -71,18 +79,23 @@ public class BookForm extends FormLayout {
     }
 
     public void setBookDto(BookDto bookDto) {
-        if (bookDto == null) {
-            clear();
+        this.bookDto = bookDto;
+
+        name.setValue(bookDto.getName() != null ? bookDto.getName() : "");
+        description.setValue(bookDto.getDescription() != null ? bookDto.getDescription() : "");
+        pages.setValue(bookDto.getPages() != null ? bookDto.getPages() : 0);
+        published.setValue(bookDto.getPublished());
+        price.setValue(bookDto.getPrice() != null ? bookDto.getPrice() : 0.0);
+        category.setValue(bookDto.getCategory());
+        availability.setValue(bookDto.getAvailability());
+
+        if (bookDto.getAuthor() != null) {
+            authorFirstName.setValue(bookDto.getAuthor().getFirstname() != null ? bookDto.getAuthor().getFirstname() : "");
+            authorLastName.setValue(bookDto.getAuthor().getLastname() != null ? bookDto.getAuthor().getLastname() : "");
         } else {
-            name.setValue(bookDto.getName());
-            description.setValue(bookDto.getDescription());
-            pages.setValue(bookDto.getPages());
-            published.setValue(bookDto.getPublished());
-            price.setValue(bookDto.getPrice());
-            category.setValue(bookDto.getCategory());
-            availability.setValue(bookDto.getAvailability());
-            authorFirstName.setValue(bookDto.getAuthor().getFirstname());
-            authorLastName.setValue(bookDto.getAuthor().getLastname());
+            authorFirstName.setValue("");
+            authorLastName.setValue("");
         }
     }
+
 }

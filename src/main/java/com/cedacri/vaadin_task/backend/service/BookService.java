@@ -10,7 +10,7 @@ public interface BookService {
 
     BookDto getBookByName(String name);
 
-    void saveBook(BookDto bookDto);
+    BookDto saveBook(BookDto bookDto);
 
     void deleteBookByName(String name);
 }

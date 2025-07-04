@@ -34,7 +34,7 @@ public class BookView extends VerticalLayout {
         configureDialog();
 
         Button searchButton = new Button("Search", e -> searchBooks());
-        Button addButton = new Button("Add", e -> openForm(null));
+        Button addButton = new Button("Add", e -> openForm(new BookDto()));
         Button updateButton = new Button("Update", e -> {
             if (selectedBook != null) {
                 openForm(selectedBook);

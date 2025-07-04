@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public void saveBook(BookDto bookDto) {
+    public BookDto saveBook(BookDto bookDto) {
         AuthorDto authorDto = bookDto.getAuthor();
 
         Optional<Author> existing = authorRepository.findByLastname(authorDto.getLastname());
@@ -53,6 +53,8 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
 
         log.info("Book was saved to database : {}", book);
+
+        return mapToBookDTO(book);
     }
 
     @Override
