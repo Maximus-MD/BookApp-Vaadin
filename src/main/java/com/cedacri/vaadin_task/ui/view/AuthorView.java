@@ -3,6 +3,7 @@ package com.cedacri.vaadin_task.ui.view;
 import com.cedacri.vaadin_task.backend.dto.AuthorDto;
 import com.cedacri.vaadin_task.backend.dto.BookDto;
 import com.cedacri.vaadin_task.backend.service.AuthorService;
+import com.cedacri.vaadin_task.ui.layout.MainLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -11,7 +12,7 @@ import com.vaadin.flow.router.Route;
 
 import java.util.stream.Collectors;
 
-@Route("/authors")
+@Route(value = "authors", layout = MainLayout.class)
 @PageTitle("Authors")
 public class AuthorView extends VerticalLayout {
 

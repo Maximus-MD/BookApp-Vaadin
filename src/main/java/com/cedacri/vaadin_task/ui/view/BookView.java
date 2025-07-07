@@ -3,6 +3,7 @@ package com.cedacri.vaadin_task.ui.view;
 import com.cedacri.vaadin_task.backend.dto.BookDto;
 import com.cedacri.vaadin_task.backend.service.BookService;
 import com.cedacri.vaadin_task.ui.form.BookForm;
+import com.cedacri.vaadin_task.ui.layout.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -16,7 +17,7 @@ import com.vaadin.flow.router.Route;
 
 import java.util.List;
 
-@Route("/books")
+@Route(value = "books", layout = MainLayout.class)
 @PageTitle("Books")
 public class BookView extends VerticalLayout {
 
@@ -81,7 +82,7 @@ public class BookView extends VerticalLayout {
                 e -> selectedBook = e.getValue()
         );
 
-        grid.addColumn(BookDto::getName).setHeader("Name").setAutoWidth(true);
+        grid.addColumn(BookDto::getName).setHeader("Book Name").setAutoWidth(true);
         grid.addColumn(BookDto::getDescription).setHeader("Description").setAutoWidth(true);
         grid.addColumn(BookDto::getPages).setHeader("Pages").setAutoWidth(true);
         grid.addColumn(BookDto::getPublished).setHeader("Published").setAutoWidth(true);

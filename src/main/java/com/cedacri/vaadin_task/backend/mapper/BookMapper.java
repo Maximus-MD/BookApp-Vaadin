@@ -8,7 +8,6 @@ import static com.cedacri.vaadin_task.backend.mapper.AuthorMapper.mapToAuthor;
 
 public class BookMapper {
     public static BookDto mapToBookDTO(Book book) {
-
         return BookDto.builder()
                 .id(book.getId())
                 .name(book.getName())
