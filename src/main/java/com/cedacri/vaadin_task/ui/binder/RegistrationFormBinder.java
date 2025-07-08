@@ -1,6 +1,10 @@
-package com.cedacri.vaadin_task.ui.form;
+package com.cedacri.vaadin_task.ui.binder;
 
 import com.cedacri.vaadin_task.backend.dto.RegisterDto;
+import com.cedacri.vaadin_task.backend.exception.UserAlreadyExistsException;
+import com.cedacri.vaadin_task.backend.service.UserService;
+import com.cedacri.vaadin_task.ui.form.RegistrationForm;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -15,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 public class RegistrationFormBinder {
 
     private final RegistrationForm registrationForm;
+
+    private final UserService userService;
 
     private boolean enablePasswordValidation;
 
@@ -31,19 +37,26 @@ public class RegistrationFormBinder {
             binder.validate();
         });
 
-        binder.setStatusLabel(registrationForm.getErrorMessageField());
+        binder.setStatusLabel(registrationForm.getErrorMessage());
 
-        registrationForm.getSubmitButton().addClickListener(event -> {
+        registrationForm.getRegisterButton().addClickListener(event -> {
            try {
                RegisterDto registerDto = new RegisterDto();
 
                binder.writeBean(registerDto);
 
+               userService.saveUser(registerDto);
+
                showSuccess(registerDto);
            } catch (ValidationException exception) {
                log.error("ValidationException occurred : {}", exception.getMessage());
-
-               Notification.show("Validation failed. Please correct the errors.", 3000, Notification.Position.MIDDLE)
+               Notification.show("Validation failed. Please enter valid data.",
+                               3000, Notification.Position.MIDDLE)
+                       .addThemeVariants(NotificationVariant.LUMO_ERROR);
+           } catch (UserAlreadyExistsException exception) {
+               log.error("UserAlreadyExistsException occurred : {}", exception.getMessage());
+               Notification.show("User already exist in db. Please change name or email.",
+                               3000, Notification.Position.MIDDLE)
                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
            }
         });
@@ -70,8 +83,11 @@ public class RegistrationFormBinder {
 
     private void showSuccess(RegisterDto registerDto) {
         Notification notification =
-                Notification.show("Data saved, welcome " + registerDto.getUsername());
+                Notification.show("You have been registered, welcome " + registerDto.getUsername());
 
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        notification.setDuration(3000);
+
+        UI.getCurrent().navigate("login");
     }
 }

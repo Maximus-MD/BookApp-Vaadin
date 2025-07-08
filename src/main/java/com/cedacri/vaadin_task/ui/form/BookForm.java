@@ -18,11 +18,14 @@ public class BookForm extends FormLayout {
 
     private final TextField name = new TextField("Name");
     private final TextField description = new TextField("Description");
+
     private final IntegerField pages = new IntegerField("Pages");
     private final DatePicker published = new DatePicker("Published");
     private final NumberField price = new NumberField("Price");
+
     private final ComboBox<BookCategory> category = new ComboBox<>("Category");
     private final ComboBox<BookAvailability> availability = new ComboBox<>("Availability");
+
     private final TextField authorFirstName = new TextField("Author First Name");
     private final TextField authorLastName = new TextField("Author Last Name");
 

@@ -9,41 +9,33 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-
 import lombok.Getter;
 
 import java.util.stream.Stream;
 
 @Getter
-public class RegistrationForm extends FormLayout {
+public class LoginForm extends FormLayout {
 
-    private final H3 title = new H3("BookStore Signup");
+    private final H3 title = new H3("BookStore Login");
 
     private final TextField username = new TextField("Username");
-    private final TextField email = new TextField("Email");
 
     private final PasswordField password = new PasswordField("Password");
-    private final PasswordField confirmPassword = new PasswordField("Confirm password");
 
     private final Span errorMessage = new Span();
 
-    private final Button registerButton = new Button("Register");
+    private final Button loginButton = new Button("Login");
 
-    private final Anchor loginLink = new Anchor("login", "Have an account?");
+    private final Anchor registerLink = new Anchor("register", "Create account");
 
-    public RegistrationForm() {
+    public LoginForm() {
         errorMessage.setVisible(false);
-        setRequiredIndicatorVisible(username, email, password, confirmPassword);
-        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        loginLink.getStyle()
-                .set("font-size", "var(--lumo-font-size-s)")
-                .set("margin-top", "10px")
-                .set("text-align", "center")
-                .set("color", "gray");
+        setRequiredIndicatorVisible(username,  password);
 
-        add(title, username, email, password,
-                confirmPassword, errorMessage, registerButton, loginLink);
+        loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        add(title, username, password, errorMessage, loginButton, registerLink);
 
         setMaxWidth("500px");
 
@@ -53,11 +45,9 @@ public class RegistrationForm extends FormLayout {
         );
 
         setColspan(title, 2);
-        setColspan(username, 2);
-        setColspan(email, 2);
         setColspan(errorMessage, 2);
-        setColspan(registerButton, 2);
-        setColspan(loginLink, 2);
+        setColspan(loginButton, 2);
+        setColspan(registerLink, 2);
     }
 
     private void setRequiredIndicatorVisible(HasValueAndElement<?, ?>... components) {

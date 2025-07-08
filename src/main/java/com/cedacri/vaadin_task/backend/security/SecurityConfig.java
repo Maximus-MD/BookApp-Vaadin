@@ -1,44 +1,44 @@
 package com.cedacri.vaadin_task.backend.security;
 
+import com.cedacri.vaadin_task.ui.view.LoginView;
+import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig extends VaadinWebSecurity {
 
     private final CustomUserDetailService userDetailsService;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/login", "/register", "/register/save",
-                                "/clubs", "/css/**", "/js/**", "/assets/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .usernameParameter("email")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/clubs?loginSuccess=true", true)
-                        .failureUrl("/login?error=true")
-                        .permitAll()
-                ).logout(LogoutConfigurer::permitAll);
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        setLoginView(http, LoginView.class);
+        super.configure(http);
+    }
 
-        return http.build();
+    @Override
+    protected void configure(WebSecurity web) throws Exception {
+        web.ignoring().requestMatchers(
+                "/VAADIN/**",
+                "/frontend/**",
+                "/images/**",
+                "/icons/**",
+                "/manifest.webmanifest",
+                "/sw.js",
+                "/offline.html",
+                "/favicon.ico",
+                "/robots.txt"
+        );
     }
 
     @Bean
