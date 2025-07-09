@@ -12,6 +12,7 @@ import com.cedacri.vaadin_task.backend.repository.RoleRepository;
 import com.cedacri.vaadin_task.backend.repository.UserRepository;
 import com.cedacri.vaadin_task.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.cedacri.vaadin_task.backend.mapper.UserMapper.mapToUserEntity;
-import static org.reflections.Reflections.log;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserEntity getByUsername(String username) {
-        return userRepository.findByEmail(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format("User %s not found", username)));
     }

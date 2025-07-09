@@ -5,6 +5,7 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +14,12 @@ public class SecurityService {
 
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
-    public User getAuthenticatedUser() {
+    public UserDetails getAuthenticatedUser() {
         SecurityContext context = SecurityContextHolder.getContext();
         Object principal = context.getAuthentication().getPrincipal();
 
-        if (principal instanceof User) {
-            return (User) context.getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return (UserDetails) context.getAuthentication().getPrincipal();
         } else {
             return null;
         }

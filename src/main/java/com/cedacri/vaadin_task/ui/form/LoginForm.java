@@ -7,6 +7,8 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Getter;
@@ -30,14 +32,27 @@ public class LoginForm extends FormLayout {
 
     public LoginForm() {
         errorMessage.setVisible(false);
+        errorMessage.getStyle().set("color", "red");
+        errorMessage.getStyle().set("font-weight", "400");
 
-        setRequiredIndicatorVisible(username,  password);
+        setRequiredIndicatorVisible(username, password);
 
         loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        add(title, username, password, errorMessage, loginButton, registerLink);
+        registerLink.getElement().getStyle().set("font-size", "small");
 
         setMaxWidth("500px");
+        getStyle().set("margin", "auto");
+        getStyle().set("padding", "2rem");
+        getStyle().set("border", "1px solid #ccc");
+        getStyle().set("border-radius", "8px");
+        getStyle().set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.1)");
+
+        VerticalLayout actionsLayout = new VerticalLayout(loginButton, registerLink);
+        actionsLayout.setSpacing(false);
+        actionsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        actionsLayout.setPadding(false);
+
+        add(title, username, password, errorMessage, actionsLayout);
 
         setResponsiveSteps(
                 new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
@@ -45,9 +60,10 @@ public class LoginForm extends FormLayout {
         );
 
         setColspan(title, 2);
+        setColspan(username, 2);
+        setColspan(password, 2);
         setColspan(errorMessage, 2);
-        setColspan(loginButton, 2);
-        setColspan(registerLink, 2);
+        setColspan(actionsLayout, 2);
     }
 
     private void setRequiredIndicatorVisible(HasValueAndElement<?, ?>... components) {

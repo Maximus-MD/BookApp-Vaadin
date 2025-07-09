@@ -20,9 +20,11 @@ public class RegistrationForm extends FormLayout {
     private final H3 title = new H3("BookStore Signup");
 
     private final TextField username = new TextField("Username");
+
     private final TextField email = new TextField("Email");
 
     private final PasswordField password = new PasswordField("Password");
+
     private final PasswordField confirmPassword = new PasswordField("Confirm password");
 
     private final Span errorMessage = new Span();

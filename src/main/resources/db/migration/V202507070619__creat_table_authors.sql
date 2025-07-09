@@ -1,6 +1,6 @@
 CREATE TABLE authors
 (
     id        BIGINT AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(100) NOT NULL,
-    lastname  VARCHAR(100) NOT NULL
+    first_name VARCHAR(100) NOT NULL,
+    last_name  VARCHAR(100) NOT NULL
 );

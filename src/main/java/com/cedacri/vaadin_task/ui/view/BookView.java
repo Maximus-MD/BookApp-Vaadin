@@ -14,18 +14,25 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 
 import java.util.List;
 
-@Route(value = "books", layout = MainLayout.class)
 @PageTitle("Books")
+@RolesAllowed({"USER", "ADMIN"})
+@Route(value = "books", layout = MainLayout.class)
 public class BookView extends VerticalLayout {
 
     private final BookService bookService;
+
     private final Grid<BookDto> grid = new Grid<>(BookDto.class, false);
+
     private final TextField searchField = new TextField("Search book by Name");
+
     private final Dialog formDialog = new Dialog();
+
     private final BookForm bookForm = new BookForm(this::saveBook);
+
     private BookDto selectedBook;
 
     public BookView(BookService bookService) {

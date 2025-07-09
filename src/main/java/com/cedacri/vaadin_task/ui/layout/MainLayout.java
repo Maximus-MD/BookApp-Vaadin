@@ -19,9 +19,8 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UserDetails;
 
-@Component
 public class MainLayout extends AppLayout {
 
     public MainLayout(SecurityService securityService) {
@@ -32,18 +31,12 @@ public class MainLayout extends AppLayout {
                 .set("font-size", "var(--lumo-font-size-1)")
                 .set("margin", "0");
 
-        User authenticatedUser = securityService.getAuthenticatedUser();
+        UserDetails authenticatedUser = securityService.getAuthenticatedUser();
         if (authenticatedUser != null) {
             Notification.show("Welcome " + authenticatedUser.getUsername());
         }
 
-        Button logout = new Button("Logout", e -> securityService.logout());
-
-        HorizontalLayout header = new HorizontalLayout(toggle, title, logout);
-        header.setWidthFull();
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.setAlignItems(FlexComponent.Alignment.CENTER);
-        header.setPadding(true);
+        HorizontalLayout header = getHorizontalLayout(securityService, toggle, title);
 
         addToNavbar(header);
 
@@ -57,5 +50,22 @@ public class MainLayout extends AppLayout {
         scroller.setClassName(LumoUtility.Padding.SMALL);
 
         addToDrawer(scroller);
+    }
+
+    private static HorizontalLayout getHorizontalLayout(SecurityService securityService, DrawerToggle toggle, H1 title) {
+        HorizontalLayout header;
+
+        if(securityService.getAuthenticatedUser() != null) {
+            Button logout = new Button("Logout", e -> securityService.logout());
+            header = new HorizontalLayout(toggle, title, logout);
+        } else {
+            header = new HorizontalLayout(toggle, title);
+        }
+
+        header.setWidthFull();
+        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+        header.setPadding(true);
+        return header;
     }
 }

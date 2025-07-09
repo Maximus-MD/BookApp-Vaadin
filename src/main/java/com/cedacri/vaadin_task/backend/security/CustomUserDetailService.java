@@ -3,6 +3,7 @@ package com.cedacri.vaadin_task.backend.security;
 import com.cedacri.vaadin_task.backend.entity.UserEntity;
 import com.cedacri.vaadin_task.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
@@ -25,7 +27,10 @@ public class CustomUserDetailService implements UserDetailsService {
                         String.format("User %s not found", username)
                 ));
 
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().getRoleName().name()));
+        log.info("Loading user: {}", user);
+
+        List<SimpleGrantedAuthority> authorities = List.of(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName().name()));
 
         return new User(
                 user.getUsername(),

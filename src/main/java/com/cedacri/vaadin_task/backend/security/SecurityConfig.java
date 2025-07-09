@@ -5,6 +5,7 @@ import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,8 +23,14 @@ public class SecurityConfig extends VaadinWebSecurity {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        setLoginView(http, LoginView.class);
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/login", "/register").permitAll()
+                .requestMatchers(HttpMethod.GET, "/books", "/authors",
+                        "/orders", "/statistics").authenticated()
+        );
+
         super.configure(http);
+        setLoginView(http, LoginView.class);
     }
 
     @Override
@@ -39,6 +46,7 @@ public class SecurityConfig extends VaadinWebSecurity {
                 "/favicon.ico",
                 "/robots.txt"
         );
+        super.configure(web);
     }
 
     @Bean
