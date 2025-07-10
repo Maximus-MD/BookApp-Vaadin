@@ -1,11 +1,11 @@
 CREATE TABLE users
 (
-    id  BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username     VARCHAR(30)         NOT NULL,
+    id       BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(30)         NOT NULL,
     email    VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(100)         NOT NULL,
+    password VARCHAR(100)        NOT NULL,
     role_id  BIGINT,
-    CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES roles(role_id)
+    CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES roles (role_id)
 );
 
 INSERT INTO users (username, email, password, role_id)

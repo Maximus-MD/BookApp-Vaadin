@@ -1,13 +1,19 @@
 package com.cedacri.vaadin_task.ui.view;
 
 import com.cedacri.vaadin_task.backend.dto.BookDto;
+import com.cedacri.vaadin_task.backend.entity.enums.BookAvailability;
+import com.cedacri.vaadin_task.backend.security.SecurityService;
 import com.cedacri.vaadin_task.backend.service.BookService;
+import com.cedacri.vaadin_task.backend.service.CartItemService;
 import com.cedacri.vaadin_task.ui.form.BookForm;
 import com.cedacri.vaadin_task.ui.layout.MainLayout;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -35,7 +41,7 @@ public class BookView extends VerticalLayout {
 
     private BookDto selectedBook;
 
-    public BookView(BookService bookService) {
+    public BookView(CartItemService cartItemService, BookService bookService, SecurityService securityService) {
         this.bookService = bookService;
 
         configureGrid();
@@ -76,18 +82,52 @@ public class BookView extends VerticalLayout {
             }
         });
 
-        HorizontalLayout actions = new HorizontalLayout(searchField, searchButton, addButton, updateButton, deleteButton);
+        HorizontalLayout actions = new HorizontalLayout(searchField, searchButton);
         actions.setAlignItems(Alignment.END);
 
-        add(actions, grid);
+        // Userii au layout diferit in dependenta de rolul lor(USER, ADMIN)
+        if (isAdmin(securityService)) {
+            actions.add(addButton, updateButton, deleteButton);
+            add(actions, grid);
+        } else {
+            Button addToCart = new Button("Add to cart", e -> {
+                if (selectedBook != null) {
+                    cartItemService.addToCart(
+                            securityService.getAuthenticatedUser().getUsername(),
+                            selectedBook.getId()
+                    );
+                    Notification.show("Book " + selectedBook.getName() + "was added to cart!");
+                } else {
+                    Notification.show("Please, select a book that you want.");
+                }
+            });
+
+            add(actions, grid, addToCart);
+        }
+
         refreshGrid();
+    }
+
+    private Component createStatusIcon(BookAvailability availability) {
+        Icon icon;
+
+        if (availability == BookAvailability.AVAILABLE) {
+            icon = VaadinIcon.CHECK.create();
+            icon.getElement().getThemeList().add("badge success");
+            icon.setColor("green");
+        } else {
+            icon = VaadinIcon.CLOSE_SMALL.create();
+            icon.getElement().getThemeList().add("badge error");
+            icon.setColor("red");
+        }
+
+        return icon;
     }
 
     private void configureGrid() {
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.asSingleSelect().addValueChangeListener(
-                e -> selectedBook = e.getValue()
-        );
+                e -> selectedBook = e.getValue());
 
         grid.addColumn(BookDto::getName).setHeader("Book Name").setAutoWidth(true);
         grid.addColumn(BookDto::getDescription).setHeader("Description").setAutoWidth(true);
@@ -95,7 +135,8 @@ public class BookView extends VerticalLayout {
         grid.addColumn(BookDto::getPublished).setHeader("Published").setAutoWidth(true);
         grid.addColumn(BookDto::getPrice).setHeader("Price").setAutoWidth(true);
         grid.addColumn(BookDto::getCategory).setHeader("Category").setAutoWidth(true);
-        grid.addColumn(BookDto::getAvailability).setHeader("Availability").setAutoWidth(true);
+        grid.addComponentColumn(bookDto -> createStatusIcon(bookDto.getAvailability()))
+                .setHeader("Availability").setAutoWidth(true);
         grid.addColumn(book -> book.getAuthor() != null ? book.getAuthor().getFullname() : "N/A")
                 .setHeader("Author").setAutoWidth(true);
     }
@@ -143,5 +184,14 @@ public class BookView extends VerticalLayout {
 
     private void refreshGrid() {
         grid.setItems(bookService.getAllBooks());
+    }
+
+    private boolean isAdmin(SecurityService securityService) {
+        return securityService.getAuthenticatedUser()
+                .getAuthorities()
+                .stream()
+                .anyMatch(user ->
+                        user.getAuthority().equals("ROLE_ADMIN"));
+
     }
 }
