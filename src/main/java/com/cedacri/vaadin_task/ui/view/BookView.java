@@ -15,6 +15,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -78,7 +79,8 @@ public class BookView extends VerticalLayout {
             if (selectedBook != null) {
                 confirmDialog.open();
             } else {
-                Notification.show("No book selected!");
+                Notification.show("No book selected!", 3000, Notification.Position.BOTTOM_CENTER)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 
@@ -91,14 +93,20 @@ public class BookView extends VerticalLayout {
             add(actions, grid);
         } else {
             Button addToCart = new Button("Add to cart", e -> {
-                if (selectedBook != null) {
+                if (selectedBook != null && selectedBook.getAvailability().equals(BookAvailability.AVAILABLE)) {
                     cartItemService.addToCart(
                             securityService.getAuthenticatedUser().getUsername(),
                             selectedBook.getId()
                     );
-                    Notification.show("Book " + selectedBook.getName() + "was added to cart!");
+                    Notification.show("Book " + selectedBook.getName() + " was added to cart!", 3000, Notification.Position.BOTTOM_CENTER)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+                } else if (selectedBook != null && selectedBook.getAvailability().equals(BookAvailability.UNAVAILABLE)) {
+                    Notification.show("Book is unavailable.", 3000, Notification.Position.BOTTOM_CENTER)
+                            .addThemeVariants(NotificationVariant.LUMO_WARNING);
                 } else {
-                    Notification.show("Please, select a book that you want.");
+                    Notification.show("Please, select available books.", 3000, Notification.Position.BOTTOM_CENTER)
+                            .addThemeVariants(NotificationVariant.LUMO_WARNING);
                 }
             });
 
@@ -163,12 +171,13 @@ public class BookView extends VerticalLayout {
 
     private void deleteBook() {
         if (selectedBook == null) {
-            Notification.show("No book selected!", 3000, Notification.Position.MIDDLE);
+            Notification.show("No book selected!", 3000, Notification.Position.BOTTOM_CENTER);
             return;
         }
 
         bookService.deleteBookByName(selectedBook.getName());
-        Notification.show("Book deleted!");
+        Notification.show("Book deleted!", 3000, Notification.Position.BOTTOM_CENTER)
+                .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         refreshGrid();
         selectedBook = null;
     }

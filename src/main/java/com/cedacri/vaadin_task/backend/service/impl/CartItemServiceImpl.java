@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public void addToCart(String username, Long bookId) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found.", username)));
@@ -38,7 +40,7 @@ public class CartItemServiceImpl implements CartItemService {
                 .orElseThrow(() -> new BookNotFoundException(String.format("Book %d not found.", bookId)));
 
         if (book.getAvailability() != BookAvailability.AVAILABLE) {
-            throw new IllegalStateException("Book is not available");
+            log.warn("Book is unavailable : {}", book.getName());
         }
 
         CartItem cartItem = cartItemRepository.findByUserAndBook(user, book)
@@ -54,6 +56,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
+    @Transactional
     public List<CartItemDto> getCartItems(String username) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found.", username)));
@@ -66,6 +69,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
+    @Transactional
     public void deleteFromCartById(Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
         log.info("CartItem was deleted : {}", cartItemId);

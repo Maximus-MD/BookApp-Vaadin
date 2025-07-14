@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -31,7 +32,8 @@ public class MainLayout extends AppLayout {
 
         UserDetails authenticatedUser = securityService.getAuthenticatedUser();
         if (authenticatedUser != null) {
-            Notification.show("Welcome, " + authenticatedUser.getUsername() + "!");
+            Notification.show("Welcome, " + authenticatedUser.getUsername() + "!", 3000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         }
 
         HorizontalLayout header = getHorizontalLayout(securityService, toggle, title);

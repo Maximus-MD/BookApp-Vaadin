@@ -38,7 +38,12 @@ public class LoginForm extends FormLayout {
         setRequiredIndicatorVisible(username, password);
 
         loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        registerLink.getElement().getStyle().set("font-size", "small");
+
+        registerLink.getStyle()
+                .set("font-size", "var(--lumo-font-size-s)")
+                .set("margin-top", "10px")
+                .set("text-align", "center")
+                .set("color", "#006af5");
 
         setMaxWidth("500px");
         getStyle().set("margin", "auto");

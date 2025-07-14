@@ -35,19 +35,28 @@ public class RegistrationForm extends FormLayout {
 
     public RegistrationForm() {
         errorMessage.setVisible(false);
+        errorMessage.getStyle().set("color", "red");
+        errorMessage.getStyle().set("font-weight", "400");
+
         setRequiredIndicatorVisible(username, email, password, confirmPassword);
+
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         loginLink.getStyle()
                 .set("font-size", "var(--lumo-font-size-s)")
                 .set("margin-top", "10px")
                 .set("text-align", "center")
-                .set("color", "gray");
+                .set("color", "#006af5");
+
+        setMaxWidth("500px");
+        getStyle().set("margin", "auto");
+        getStyle().set("padding", "2rem");
+        getStyle().set("border", "1px solid #ccc");
+        getStyle().set("border-radius", "8px");
+        getStyle().set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.1)");
 
         add(title, username, email, password,
                 confirmPassword, errorMessage, registerButton, loginLink);
-
-        setMaxWidth("500px");
 
         setResponsiveSteps(
                 new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),

@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -56,10 +57,12 @@ public class OrderView extends VerticalLayout {
     private void removeOrder() {
         if(selectedItem != null) {
             cartItemService.deleteFromCartById(selectedItem.getId());
-            Notification.show(selectedItem.getBookName() + " removed from cart.");
+            Notification.show(selectedItem.getBookName() + " removed from cart.", 3000, Notification.Position.BOTTOM_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
             refreshGrid();
         } else {
-            Notification.show("Select an item to remove.");
+            Notification.show("Select an item to remove.", 3000, Notification.Position.BOTTOM_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         }
     }
 

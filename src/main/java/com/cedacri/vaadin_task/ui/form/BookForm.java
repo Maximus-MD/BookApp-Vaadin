@@ -29,8 +29,6 @@ public class BookForm extends FormLayout {
     private final TextField authorFirstName = new TextField("Author First Name");
     private final TextField authorLastName = new TextField("Author Last Name");
 
-    private final Button save = new Button("Save");
-
     public interface BookSaveListener {
         void onSave(BookDto bookDto);
     }
@@ -39,6 +37,7 @@ public class BookForm extends FormLayout {
         category.setItems(BookCategory.values());
         availability.setItems(BookAvailability.values());
 
+        Button save = new Button("Save");
         save.addClickListener(e -> {
             if (this.bookDto == null) {
                 this.bookDto = new BookDto();

@@ -52,11 +52,10 @@ public class LoginFormBinder {
                         SecurityContextHolder.getContext()
                 );
 
-                UI.getCurrent().navigate("books");
+                UI.getCurrent().getPage().setLocation("books");
             } catch (ValidationException exception) {
                 log.error("ValidationException occurred : {}", exception.getMessage());
 
-                loginForm.getErrorMessage().setText("Validation failed.");
                 loginForm.getErrorMessage().setVisible(true);
             } catch (AuthenticationException exception) {
                 log.error("AuthenticationException occurred : {}", exception.getMessage());

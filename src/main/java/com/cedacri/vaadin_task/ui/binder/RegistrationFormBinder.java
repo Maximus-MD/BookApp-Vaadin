@@ -82,12 +82,9 @@ public class RegistrationFormBinder {
     }
 
     private void showSuccess(RegisterDto registerDto) {
-        Notification notification =
-                Notification.show("You have been registered, welcome " + registerDto.getUsername());
+        Notification.show("You have been registered, welcome " + registerDto.getUsername(), 3000, Notification.Position.TOP_CENTER)
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
-        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        notification.setDuration(3000);
-
-        UI.getCurrent().navigate("login");
+        UI.getCurrent().getPage().setLocation("login");
     }
 }
