@@ -41,7 +41,9 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
 
         SideNav nav = new SideNav();
-        nav.addItem(new SideNavItem("Orders", OrderView.class, new Icon(VaadinIcon.CLIPBOARD)));
+        if (isUser(securityService)) {
+            nav.addItem(new SideNavItem("Orders", OrderView.class, new Icon(VaadinIcon.CART)));
+        }
         nav.addItem(new SideNavItem("Authors", AuthorView.class, new Icon(VaadinIcon.USER)));
         nav.addItem(new SideNavItem("Products", BookView.class, new Icon(VaadinIcon.BOOK)));
 
@@ -54,7 +56,7 @@ public class MainLayout extends AppLayout {
     private static HorizontalLayout getHorizontalLayout(SecurityService securityService, DrawerToggle toggle, H1 title) {
         HorizontalLayout header;
 
-        if(securityService.getAuthenticatedUser() != null) {
+        if (securityService.getAuthenticatedUser() != null) {
             Button logout = new Button("Logout", e -> securityService.logout());
             header = new HorizontalLayout(toggle, title, logout);
         } else {
@@ -66,5 +68,12 @@ public class MainLayout extends AppLayout {
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setPadding(true);
         return header;
+    }
+
+    private boolean isUser(SecurityService securityService) {
+        UserDetails user = securityService.getAuthenticatedUser();
+        return user != null && user.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_USER"));
+
     }
 }

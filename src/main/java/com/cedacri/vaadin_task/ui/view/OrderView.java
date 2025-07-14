@@ -8,6 +8,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,6 +24,8 @@ public class OrderView extends VerticalLayout {
     private final CartItemService cartItemService;
 
     private final SecurityService securityService;
+
+    private final Span totalPriceSpan = new Span();
 
     private final Grid<CartItemDto> grid = new Grid<>(CartItemDto.class, false);
 
@@ -49,9 +52,21 @@ public class OrderView extends VerticalLayout {
         grid.addColumn(CartItemDto::getBookName).setHeader("Book Name").setAutoWidth(true);
         grid.addColumn(CartItemDto::getQuantity).setHeader("Quantity").setAutoWidth(true);
         grid.addColumn(CartItemDto::getPrice).setHeader("Price").setAutoWidth(true);
+        grid.addColumn(CartItemDto::getFinalPrice).setHeader("Final price").setAutoWidth(true);
 
         grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.asSingleSelect().addValueChangeListener(e -> selectedItem = e.getValue());
+
+        totalPriceSpan.getStyle().set("font-weight", "bold");
+        add(grid, totalPriceSpan);
+    }
+
+    private void updateTotalPrice() {
+        double total = grid.getListDataView()
+                .getItems()
+                .mapToDouble(CartItemDto::getFinalPrice)
+                .sum();
+        totalPriceSpan.setText("Total: " + total + " lei");
     }
 
     private void removeOrder() {
@@ -69,5 +84,6 @@ public class OrderView extends VerticalLayout {
     private void refreshGrid() {
         String username = securityService.getAuthenticatedUser().getUsername();
         grid.setItems(cartItemService.getCartItems(username));
+        updateTotalPrice();
     }
 }

@@ -9,7 +9,8 @@ public class CartItemMapper {
                 .id(item.getId())
                 .bookName(item.getBook().getName())
                 .quantity(item.getQuantity())
-                .price(item.getBook().getPrice() * item.getQuantity())
+                .price(item.getBook().getPrice())
+                .finalPrice(item.getBook().getPrice() * item.getQuantity())
                 .build();
     }
 }

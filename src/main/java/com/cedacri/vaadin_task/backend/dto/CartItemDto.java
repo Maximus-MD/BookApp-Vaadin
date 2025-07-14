@@ -14,4 +14,5 @@ public class CartItemDto {
     private String bookName;
     private int quantity;
     private double price;
+    private double finalPrice;
 }
